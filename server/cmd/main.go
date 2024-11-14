@@ -43,7 +43,7 @@ func main() {
 	}))
 
 	// Setup Router
-	routes.SetupRouter(r)
+	routes.SetupRouter(r, db)
 
 	// Configure Server
 	srv := &http.Server{
