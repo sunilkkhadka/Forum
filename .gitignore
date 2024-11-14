@@ -1,1 +1,3 @@
 server/.env
+forum_data
+forum_data/*

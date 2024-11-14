@@ -9,17 +9,30 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/sunilkkhadka/Forum/config"
+	"github.com/sunilkkhadka/Forum/internal/database"
 	"github.com/sunilkkhadka/Forum/internal/routes"
 )
 
 func main() {
+	// Load Configurations
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
+	log.Println("Configurations Loaded Successfully!!")
 
+	// Connect to Database
+	db, err := database.InitDB(cfg.Database)
+	if err != nil {
+		log.Fatalf("Could not connect to the database: %v", err)
+	}
+	log.Println("Database Connected Successfully!!")
+	defer db.Close()
+
+	// Initiate Router
 	r := gin.Default()
 
+	// Allow Cors
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
@@ -29,8 +42,10 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	// Setup Router
 	routes.SetupRouter(r)
 
+	// Configure Server
 	srv := &http.Server{
 		Addr:         cfg.Server.Addr,
 		Handler:      r,
@@ -39,6 +54,6 @@ func main() {
 		IdleTimeout:  cfg.Server.IdleTimeout,
 	}
 
+	// Create Server
 	srv.ListenAndServe()
-
 }
