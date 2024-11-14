@@ -1,0 +1,9 @@
+.env
+.env.example
+
+*.log
+
+.git
+.gitignore
+
+mysql_data/

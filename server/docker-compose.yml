@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   forum_database:
-    container_name: forum
+    container_name: forum_db
     image: mysql:8.0
     restart: always
     ports:
@@ -12,12 +12,36 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 30s
       timeout: 30s
       retries: 5
+    networks:
+      - forum_network
+
+  forum_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: forum_server
+    restart: on-failure
+    volumes:
+      - ./:/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - forum_database
+    env_file:
+      - .env
+    networks:
+      - forum_network
 
 volumes:
   mysql_data:
+
+networks:
+  forum_network:
+    external: true
