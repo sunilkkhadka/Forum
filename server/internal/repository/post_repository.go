@@ -24,7 +24,7 @@ func (repo *PostRepository) GetAllPosts() (*[]model.Post, error) {
 	posts := &[]model.Post{
 		{
 			ID:        1,
-			Content:   "Some Content Here",
+			Content:   "SUNIL KHADKA",
 			Title:     "React Basics",
 			UserID:    1,
 			Tags:      []string{"web", "react"},
