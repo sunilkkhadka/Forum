@@ -19,7 +19,7 @@ func NewUserHandler(userService service.UserServiceI) *UserHandler {
 	}
 }
 
-func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
+func (handler *UserHandler) RegisterUserHandler(ctx *gin.Context) {
 	var registerUser *dto.RegisterUserRequest
 
 	if err := ctx.ShouldBindJSON(&registerUser); err != nil {
@@ -32,5 +32,11 @@ func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
 		return
 	}
 
-	utils.SendSuccessResponse(ctx, "Success bhayo hai", registerUser)
+	err := handler.UserService.RegisterUser(registerUser)
+	if err != nil {
+		utils.SendErrorResponse(ctx, 400, "badaboom")
+		return
+	}
+
+	utils.SendSuccessResponse(ctx, "Registration Successful", "")
 }
