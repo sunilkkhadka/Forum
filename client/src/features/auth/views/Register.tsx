@@ -1,9 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import { useRegisterUser } from "../hooks/useAuth";
 import { IRegisterFormFieldProps } from "../auth.type";
 import { RegisterFormSchema } from "../auth.validation";
-import { useRegisterUser } from "../hooks/useAuth";
 
 const Register = () => {
   const {
@@ -23,8 +23,6 @@ const Register = () => {
       password: data.password,
     });
   };
-
-  console.log("component renders");
 
   return (
     <section>

@@ -24,7 +24,7 @@ func SendSuccessResponse(ctx *gin.Context, message string, data interface{}) {
 		Data:    data,
 	}
 
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, gin.H{"response": response})
 }
 
 func SendErrorResponse(ctx *gin.Context, code int, message string) {
@@ -32,5 +32,5 @@ func SendErrorResponse(ctx *gin.Context, code int, message string) {
 		Status:  "error",
 		Message: message,
 	}
-	ctx.AbortWithStatusJSON(code, response)
+	ctx.AbortWithStatusJSON(code, gin.H{"response": response})
 }

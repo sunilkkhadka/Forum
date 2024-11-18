@@ -8,5 +8,5 @@ import (
 func UserRoutes(rg *gin.RouterGroup, userHandler *handler.UserHandler) {
 	auth_routes := rg.Group("/auth")
 
-	auth_routes.POST("/register", userHandler.RegisterUser)
+	auth_routes.POST("/register", userHandler.RegisterUserHandler)
 }
