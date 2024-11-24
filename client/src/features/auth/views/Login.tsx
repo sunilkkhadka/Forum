@@ -20,13 +20,15 @@ const Login = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const { error } = useSelector((state: RootState) => state.auth);
+  const { error, status } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (error && error.code == 404) {
+    if (status == "succeeded") {
+      toast.success("Logged In Successfully");
+    } else if (status == "failed" && error) {
       toast.error(error.message);
     }
-  }, [error]);
+  }, [status, error]);
 
   const onLogin: SubmitHandler<IBasicFormFieldProps> = (data) => {
     dispatch(loginUser(data));
