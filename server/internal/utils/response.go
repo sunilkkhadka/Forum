@@ -13,7 +13,7 @@ type SuccessResponse struct {
 }
 
 type ErrorResponse struct {
-	Status  string `json:"status"`
+	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
 
@@ -27,10 +27,6 @@ func SendSuccessResponse(ctx *gin.Context, message string, data interface{}) {
 	ctx.JSON(http.StatusOK, gin.H{"response": response})
 }
 
-func SendErrorResponse(ctx *gin.Context, code int, message string) {
-	response := ErrorResponse{
-		Status:  "error",
-		Message: message,
-	}
-	ctx.AbortWithStatusJSON(code, gin.H{"response": response})
+func SendErrorResponse(ctx *gin.Context, errorData ErrorResponse) {
+	ctx.AbortWithStatusJSON(errorData.Code, gin.H{"response": errorData})
 }
