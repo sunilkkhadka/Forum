@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import Root from "./Root";
-import { Register } from "./LazyRoutes";
+import { Login, Register } from "./LazyRoutes";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +14,14 @@ const router = createBrowserRouter([
     element: (
       <Suspense fallback={<h1>Loading...</h1>}>
         <Register />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <Suspense fallback={<h1>Loading...</h1>}>
+        <Login />
       </Suspense>
     ),
   },
