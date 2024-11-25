@@ -1,13 +1,14 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch, useSelector } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { loginUser } from "../auth.slice";
-import { AppDispatch, RootState } from "../../../store/store";
 import { IBasicFormFieldProps } from "../auth.type";
 import { BasicFormSchema } from "../auth.validation";
-import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { AppDispatch, RootState } from "../../../store/store";
 
 const Login = () => {
   const {
@@ -18,6 +19,8 @@ const Login = () => {
     resolver: zodResolver(BasicFormSchema),
   });
 
+  const navigate = useNavigate();
+
   const dispatch = useDispatch<AppDispatch>();
 
   const { error, status } = useSelector((state: RootState) => state.auth);
@@ -25,10 +28,11 @@ const Login = () => {
   useEffect(() => {
     if (status == "succeeded") {
       toast.success("Logged In Successfully");
+      navigate("/post");
     } else if (status == "failed" && error) {
       toast.error(error.message);
     }
-  }, [status, error]);
+  }, [status, error, navigate]);
 
   const onLogin: SubmitHandler<IBasicFormFieldProps> = (data) => {
     dispatch(loginUser(data));

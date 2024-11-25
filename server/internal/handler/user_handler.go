@@ -102,3 +102,41 @@ func (handler *UserHandler) LoginUserHandler(ctx *gin.Context) {
 	})
 
 }
+
+func (handler *UserHandler) RefreshTokenHandler(ctx *gin.Context) {
+	refreshToken, err := ctx.Cookie("refresh_token")
+	if err != nil {
+		utils.SendErrorResponse(ctx, utils.ErrorResponse{
+			Code:    http.StatusUnauthorized,
+			Message: "Token Not Found",
+		})
+		return
+	}
+
+	claims, err := auth.ValidateToken(refreshToken, []byte(auth.JwtConf.JwtRefreshTokenSecret))
+	if err != nil {
+		utils.SendErrorResponse(ctx, utils.ErrorResponse{
+			Code:    http.StatusUnauthorized,
+			Message: "Invalid Refresh Token",
+		})
+		return
+	}
+
+	userId := claims["user_id"].(float64)
+	role := claims["role"].(string)
+
+	newAccessToken, newRefreshToken, err := auth.GenerateToken(uint(userId), role)
+	if err != nil {
+		utils.SendErrorResponse(ctx, utils.ErrorResponse{
+			Code:    http.StatusUnauthorized,
+			Message: "Cannot Generate Token",
+		})
+		return
+	}
+
+	ctx.SetCookie("access_token", newAccessToken, int(auth.JwtConf.JwtAccessTokenExpirationTime.Seconds()), "/", "localhost", false, true)
+	ctx.SetCookie("refresh_token", newRefreshToken, int(auth.JwtConf.JwtRefreshTokenExpirationTime.Seconds()), "/api/v1/auth", "localhost", false, true)
+
+	utils.SendSuccessResponse(ctx, "Tokens Refreshed Successfully", "")
+
+}
